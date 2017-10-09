@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.Arrays;
 
 public class Puzzle {
-    int [][] twoDimPuzzle = new int [7][7];
+    private int [][] twoDimPuzzle = new int [7][7];
 
     void run(String puzzleURI) {
         readPuzzleFile(puzzleURI);
@@ -29,7 +29,15 @@ public class Puzzle {
             System.out.println(Arrays.deepToString(twoDimPuzzle));
         }
         catch (IOException err) {
-            System.out.println(err);
+            System.out.println(err.toString());
         }
+    }
+
+    private void findNextMove(int positionX, int positionY) {
+        // TODO : Find algorithm
+    }
+
+    private void resolve() {
+        // TODO : create recursive function to resolve puzzle
     }
 }
