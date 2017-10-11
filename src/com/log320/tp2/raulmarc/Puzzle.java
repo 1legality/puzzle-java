@@ -8,6 +8,10 @@ public class Puzzle {
 
     void run(String puzzleURI) {
         readPuzzleFile(puzzleURI);
+        boolean won = resolve();
+
+        System.out.println("won? : " + won);
+        System.out.println(Arrays.deepToString(twoDimPuzzle));
     }
 
     private void readPuzzleFile(String puzzleURI) {
@@ -19,7 +23,6 @@ public class Puzzle {
             while ((word = brWords.readLine()) != null) {
                 int column = 0;
                 for (char letter : word.toCharArray()) {
-                    System.out.println(letter);
                     twoDimPuzzle[line][column] = Character.getNumericValue(letter);
                     column++;
                 }
@@ -33,11 +36,66 @@ public class Puzzle {
         }
     }
 
-    private void findNextMove(int positionX, int positionY) {
-        // TODO : Find algorithm
+    private boolean findNextMove(int positionX, int positionY) {
+        // use Konami order : up, down, left, right
+        if (positionX >= 2 &&
+            twoDimPuzzle[positionX - 1][positionY] == 1 && twoDimPuzzle[positionX - 2][positionY] == 1) {
+            // move up
+            twoDimPuzzle[positionX - 1][positionY] = 2;
+            twoDimPuzzle[positionX - 2][positionY] = 2;
+            return true;
+        }
+        else if (positionX <= 4 &&
+                 twoDimPuzzle[positionX + 1][positionY] == 1 && twoDimPuzzle[positionX + 2][positionY] == 1) {
+            // move down
+            twoDimPuzzle[positionX + 1][positionY] = 2;
+            twoDimPuzzle[positionX + 2][positionY] = 2;
+            return true;
+
+        }
+        else if (positionY <= 4 &&
+                 twoDimPuzzle[positionX][positionY + 1] == 1 && twoDimPuzzle[positionX][positionY + 2] == 1) {
+            // move left
+            twoDimPuzzle[positionX][positionY + 1] = 2;
+            twoDimPuzzle[positionX][positionY + 2] = 2;
+            return true;
+
+        }
+        else if (positionY >= 2 &&
+                 twoDimPuzzle[positionX][positionY - 1] == 1 && twoDimPuzzle[positionX][positionY - 2] == 1) {
+            // move right
+            twoDimPuzzle[positionX][positionY - 1] = 2;
+            twoDimPuzzle[positionX][positionY - 2] = 2;
+            return true;
+
+        }
+        else {
+            // There is no move left for this position
+            return false;
+        }
     }
 
-    private void resolve() {
+    private boolean resolve() {
         // TODO : create recursive function to resolve puzzle
+        int ballsLeft = 0;
+        for (int i = 0; i < 7; i++) {
+            for (int n = 0; n < 7; n++) {
+                if (twoDimPuzzle[i][n] == 2) {
+                    System.out.println("trying position " + i + ":" + n);
+                    if (findNextMove(i, n)) {
+                        resolve();
+                    }
+                }
+                else if (twoDimPuzzle[i][n] == 1)
+                    ballsLeft++;
+            }
+        }
+
+        if (ballsLeft == 1) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }
