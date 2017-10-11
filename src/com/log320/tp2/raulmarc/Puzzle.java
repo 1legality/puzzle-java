@@ -53,44 +53,44 @@ class Puzzle {
         // use Konami order : up, down, left, right
         if (positionY <= 4 &&
                 twoDimPuzzle[positionX][positionY + 1] == 1 &&
-                twoDimPuzzle[positionX][positionY + 2] == 1) {
-            // move up
+                twoDimPuzzle[positionX][positionY + 2] == 2) {
+            // move UP
             twoDimPuzzle[positionX][positionY + 1] = 2;
-            twoDimPuzzle[positionX][positionY + 2] = 2;
-            twoDimPuzzle[positionX][positionY] = 1;
-            pegs--;
+            twoDimPuzzle[positionX][positionY + 2] = 1;
+            twoDimPuzzle[positionX][positionY] = 2;
             moves.add(new Move(positionX, positionY, Move.DirectionEnum.UP));
+            pegs--;
             return true;
         }
         else if (positionY >= 2 &&
                     twoDimPuzzle[positionX][positionY - 1] == 1 &&
-                    twoDimPuzzle[positionX][positionY - 2] == 1) {
-            // move down
+                    twoDimPuzzle[positionX][positionY - 2] == 2) {
+            // move DOWN
             twoDimPuzzle[positionX][positionY - 1] = 2;
-            twoDimPuzzle[positionX][positionY - 2] = 2;
-            twoDimPuzzle[positionX][positionY] = 1;
-            moves.add(new Move(positionX, positionY, Move.DirectionEnum.DOWN));
+            twoDimPuzzle[positionX][positionY - 2] = 1;
+            twoDimPuzzle[positionX][positionY] = 2;
             pegs--;
+            moves.add(new Move(positionX, positionY, Move.DirectionEnum.DOWN));
             return true;
         }
         else if (positionX <= 4 &&
                     twoDimPuzzle[positionX + 1][positionY] == 1 &&
-                    twoDimPuzzle[positionX + 2][positionY] == 1) {
-            // move right
+                    twoDimPuzzle[positionX + 2][positionY] == 2) {
+            // move LEFT
             twoDimPuzzle[positionX + 1][positionY] = 2;
-            twoDimPuzzle[positionX + 2][positionY] = 2;
-            twoDimPuzzle[positionX][positionY] = 1;
+            twoDimPuzzle[positionX + 2][positionY] = 1;
+            twoDimPuzzle[positionX][positionY] = 2;
             moves.add(new Move(positionX, positionY, Move.DirectionEnum.LEFT));
             pegs--;
             return true;
         }
         else if (positionX >= 2 &&
                 twoDimPuzzle[positionX - 1][positionY] == 1 &&
-                twoDimPuzzle[positionX - 2][positionY] == 1) {
-            // move left
+                twoDimPuzzle[positionX - 2][positionY] == 2) {
+            // move RIGHT
             twoDimPuzzle[positionX - 1][positionY] = 2;
-            twoDimPuzzle[positionX - 2][positionY] = 2;
-            twoDimPuzzle[positionX][positionY] = 1;
+            twoDimPuzzle[positionX - 2][positionY] = 1;
+            twoDimPuzzle[positionX][positionY] = 2;
             moves.add(new Move(positionX, positionY, Move.DirectionEnum.RIGHT));
             pegs--;
             return true;
@@ -104,23 +104,23 @@ class Puzzle {
     private void undo(Move move) {
         if (move.getDirection().equals(Move.DirectionEnum.UP.toString())) {
             twoDimPuzzle[move.getPositionX()][move.getPositionY() + 1] = 1;
-            twoDimPuzzle[move.getPositionX()][move.getPositionY() + 2] = 1;
-            twoDimPuzzle[move.getPositionX()][move.getPositionY()] = 2;
+            twoDimPuzzle[move.getPositionX()][move.getPositionY() + 2] = 2;
+            twoDimPuzzle[move.getPositionX()][move.getPositionY()] = 1;
         }
         else if (move.getDirection().equals(Move.DirectionEnum.DOWN.toString())) {
             twoDimPuzzle[move.getPositionX()][move.getPositionY() - 1] = 1;
-            twoDimPuzzle[move.getPositionX()][move.getPositionY() - 2] = 1;
-            twoDimPuzzle[move.getPositionX()][move.getPositionY()] = 2;
+            twoDimPuzzle[move.getPositionX()][move.getPositionY() - 2] = 2;
+            twoDimPuzzle[move.getPositionX()][move.getPositionY()] = 1;
         }
         else if (move.getDirection().equals(Move.DirectionEnum.LEFT.toString())) {
             twoDimPuzzle[move.getPositionX() + 1][move.getPositionY()] = 1;
-            twoDimPuzzle[move.getPositionX() + 2][move.getPositionY()] = 1;
-            twoDimPuzzle[move.getPositionX()][move.getPositionY()] = 2;
+            twoDimPuzzle[move.getPositionX() + 2][move.getPositionY()] = 2;
+            twoDimPuzzle[move.getPositionX()][move.getPositionY()] = 1;
         }
         else if (move.getDirection().equals(Move.DirectionEnum.RIGHT.toString())) {
             twoDimPuzzle[move.getPositionX() - 1][move.getPositionY()] = 1;
-            twoDimPuzzle[move.getPositionX() - 2][move.getPositionY()] = 1;
-            twoDimPuzzle[move.getPositionX()][move.getPositionY()] = 2;
+            twoDimPuzzle[move.getPositionX() - 2][move.getPositionY()] = 2;
+            twoDimPuzzle[move.getPositionX()][move.getPositionY()] = 1;
         }
     }
 
@@ -129,7 +129,7 @@ class Puzzle {
         int pegsLeft = 0;
         for (int i = 0; i < 7; i++) {
             for (int n = 0; n < 7; n++) {
-                if (twoDimPuzzle[i][n] == 2) {
+                if (twoDimPuzzle[i][n] == 1) {
                     if (findNextMove(i, n)) {
                         resolve();
                     }
