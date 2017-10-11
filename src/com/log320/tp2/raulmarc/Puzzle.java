@@ -1,10 +1,12 @@
 package com.log320.tp2.raulmarc;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Puzzle {
+class Puzzle {
     private int [][] twoDimPuzzle = new int [7][7];
+    private ArrayList<Move> moves = new ArrayList<>();
 
     void run(String puzzleURI) {
         readPuzzleFile(puzzleURI);
@@ -12,6 +14,10 @@ public class Puzzle {
 
         System.out.println("won? : " + won);
         System.out.println(Arrays.deepToString(twoDimPuzzle));
+
+        for (Move move : moves) {
+            System.out.println(move.getPositionX() + ":" + move.getPositionY() + ":" + move.getDirection());
+        }
     }
 
     private void readPuzzleFile(String puzzleURI) {
@@ -43,6 +49,7 @@ public class Puzzle {
             // move up
             twoDimPuzzle[positionX - 1][positionY] = 2;
             twoDimPuzzle[positionX - 2][positionY] = 2;
+            moves.add(new Move(positionX, positionY, Move.DirectionEnum.UP));
             return true;
         }
         else if (positionX <= 4 &&
@@ -50,6 +57,8 @@ public class Puzzle {
             // move down
             twoDimPuzzle[positionX + 1][positionY] = 2;
             twoDimPuzzle[positionX + 2][positionY] = 2;
+            moves.add(new Move(positionX, positionY, Move.DirectionEnum.RIGHT));
+
             return true;
 
         }
@@ -58,6 +67,8 @@ public class Puzzle {
             // move left
             twoDimPuzzle[positionX][positionY + 1] = 2;
             twoDimPuzzle[positionX][positionY + 2] = 2;
+            moves.add(new Move(positionX, positionY, Move.DirectionEnum.LEFT));
+
             return true;
 
         }
@@ -66,6 +77,7 @@ public class Puzzle {
             // move right
             twoDimPuzzle[positionX][positionY - 1] = 2;
             twoDimPuzzle[positionX][positionY - 2] = 2;
+            moves.add(new Move(positionX, positionY, Move.DirectionEnum.RIGHT));
             return true;
 
         }
