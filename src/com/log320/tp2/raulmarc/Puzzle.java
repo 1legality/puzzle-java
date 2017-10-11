@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 class Puzzle {
+    private int pegs = 0;
     private int [][] twoDimPuzzle = new int [7][7];
     private ArrayList<Move> moves = new ArrayList<>();
 
@@ -13,8 +14,9 @@ class Puzzle {
         readPuzzleFile(puzzleURI);
         boolean won = resolve();
 
-        System.out.println("won? : " + won);
-        System.out.println(Arrays.deepToString(twoDimPuzzle));
+        String result =  won ? "Congratulations!" : "Lost, " + pegs + " left on board";
+        System.out.println(result);
+        System.out.println(Arrays.deepToString(twoDimPuzzle).replace("], ", "]\n").replace("[[", "[").replace("]]", "]"));
 
         // undo everything (test)
         Collections.reverse(moves);
@@ -22,7 +24,8 @@ class Puzzle {
             System.out.println(move.getPositionX() + ":" + move.getPositionY() + ":" + move.getDirection());
             undo(move);
         }
-        System.out.println(Arrays.deepToString(twoDimPuzzle));
+        System.out.println(Arrays.deepToString(twoDimPuzzle).replace("], ", "]\n").replace("[[", "[").replace("]]", "]"));
+
     }
 
     private void readPuzzleFile(String puzzleURI) {
@@ -34,13 +37,12 @@ class Puzzle {
             while ((word = brWords.readLine()) != null) {
                 int column = 0;
                 for (char letter : word.toCharArray()) {
+                    if (Character.getNumericValue(letter) == 1) { pegs++; }
                     twoDimPuzzle[line][column] = Character.getNumericValue(letter);
                     column++;
                 }
                 line++;
             }
-
-
         }
         catch (IOException err) {
             System.out.println(err.toString());
@@ -56,6 +58,7 @@ class Puzzle {
             twoDimPuzzle[positionX][positionY + 1] = 2;
             twoDimPuzzle[positionX][positionY + 2] = 2;
             twoDimPuzzle[positionX][positionY] = 1;
+            pegs--;
             moves.add(new Move(positionX, positionY, Move.DirectionEnum.UP));
             return true;
         }
@@ -67,6 +70,7 @@ class Puzzle {
             twoDimPuzzle[positionX][positionY - 2] = 2;
             twoDimPuzzle[positionX][positionY] = 1;
             moves.add(new Move(positionX, positionY, Move.DirectionEnum.DOWN));
+            pegs--;
             return true;
         }
         else if (positionX <= 4 &&
@@ -77,6 +81,7 @@ class Puzzle {
             twoDimPuzzle[positionX + 2][positionY] = 2;
             twoDimPuzzle[positionX][positionY] = 1;
             moves.add(new Move(positionX, positionY, Move.DirectionEnum.LEFT));
+            pegs--;
             return true;
         }
         else if (positionX >= 2 &&
@@ -87,6 +92,7 @@ class Puzzle {
             twoDimPuzzle[positionX - 2][positionY] = 2;
             twoDimPuzzle[positionX][positionY] = 1;
             moves.add(new Move(positionX, positionY, Move.DirectionEnum.RIGHT));
+            pegs--;
             return true;
         }
         else {
@@ -120,21 +126,20 @@ class Puzzle {
 
     private boolean resolve() {
         // TODO : create recursive function to resolve puzzle
-        int ballsLeft = 0;
+        int pegsLeft = 0;
         for (int i = 0; i < 7; i++) {
             for (int n = 0; n < 7; n++) {
                 if (twoDimPuzzle[i][n] == 2) {
-                    System.out.println("trying position " + i + ":" + n);
                     if (findNextMove(i, n)) {
                         resolve();
                     }
                 }
                 else if (twoDimPuzzle[i][n] == 1)
-                    ballsLeft++;
+                    pegsLeft++;
             }
         }
 
-        if (ballsLeft == 1) {
+        if (pegsLeft == 1) {
             return true;
         }
         else {
