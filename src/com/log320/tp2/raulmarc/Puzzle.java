@@ -3,6 +3,7 @@ package com.log320.tp2.raulmarc;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 class Puzzle {
     private int [][] twoDimPuzzle = new int [7][7];
@@ -15,9 +16,13 @@ class Puzzle {
         System.out.println("won? : " + won);
         System.out.println(Arrays.deepToString(twoDimPuzzle));
 
+        // undo everything (test)
+        Collections.reverse(moves);
         for (Move move : moves) {
             System.out.println(move.getPositionX() + ":" + move.getPositionY() + ":" + move.getDirection());
+            undo(move);
         }
+        System.out.println(Arrays.deepToString(twoDimPuzzle));
     }
 
     private void readPuzzleFile(String puzzleURI) {
@@ -35,7 +40,7 @@ class Puzzle {
                 line++;
             }
 
-            System.out.println(Arrays.deepToString(twoDimPuzzle));
+
         }
         catch (IOException err) {
             System.out.println(err.toString());
@@ -44,46 +49,72 @@ class Puzzle {
 
     private boolean findNextMove(int positionX, int positionY) {
         // use Konami order : up, down, left, right
-        if (positionX >= 2 &&
-            twoDimPuzzle[positionX - 1][positionY] == 1 && twoDimPuzzle[positionX - 2][positionY] == 1) {
+        if (positionY <= 4 &&
+                twoDimPuzzle[positionX][positionY + 1] == 1 &&
+                twoDimPuzzle[positionX][positionY + 2] == 1) {
             // move up
-            twoDimPuzzle[positionX - 1][positionY] = 2;
-            twoDimPuzzle[positionX - 2][positionY] = 2;
+            twoDimPuzzle[positionX][positionY + 1] = 2;
+            twoDimPuzzle[positionX][positionY + 2] = 2;
+            twoDimPuzzle[positionX][positionY] = 1;
             moves.add(new Move(positionX, positionY, Move.DirectionEnum.UP));
             return true;
         }
-        else if (positionX <= 4 &&
-                 twoDimPuzzle[positionX + 1][positionY] == 1 && twoDimPuzzle[positionX + 2][positionY] == 1) {
-            // move down
-            twoDimPuzzle[positionX + 1][positionY] = 2;
-            twoDimPuzzle[positionX + 2][positionY] = 2;
-            moves.add(new Move(positionX, positionY, Move.DirectionEnum.RIGHT));
-
-            return true;
-
-        }
-        else if (positionY <= 4 &&
-                 twoDimPuzzle[positionX][positionY + 1] == 1 && twoDimPuzzle[positionX][positionY + 2] == 1) {
-            // move left
-            twoDimPuzzle[positionX][positionY + 1] = 2;
-            twoDimPuzzle[positionX][positionY + 2] = 2;
-            moves.add(new Move(positionX, positionY, Move.DirectionEnum.LEFT));
-
-            return true;
-
-        }
         else if (positionY >= 2 &&
-                 twoDimPuzzle[positionX][positionY - 1] == 1 && twoDimPuzzle[positionX][positionY - 2] == 1) {
-            // move right
+                    twoDimPuzzle[positionX][positionY - 1] == 1 &&
+                    twoDimPuzzle[positionX][positionY - 2] == 1) {
+            // move down
             twoDimPuzzle[positionX][positionY - 1] = 2;
             twoDimPuzzle[positionX][positionY - 2] = 2;
+            twoDimPuzzle[positionX][positionY] = 1;
+            moves.add(new Move(positionX, positionY, Move.DirectionEnum.DOWN));
+            return true;
+        }
+        else if (positionX <= 4 &&
+                    twoDimPuzzle[positionX + 1][positionY] == 1 &&
+                    twoDimPuzzle[positionX + 2][positionY] == 1) {
+            // move right
+            twoDimPuzzle[positionX + 1][positionY] = 2;
+            twoDimPuzzle[positionX + 2][positionY] = 2;
+            twoDimPuzzle[positionX][positionY] = 1;
+            moves.add(new Move(positionX, positionY, Move.DirectionEnum.LEFT));
+            return true;
+        }
+        else if (positionX >= 2 &&
+                twoDimPuzzle[positionX - 1][positionY] == 1 &&
+                twoDimPuzzle[positionX - 2][positionY] == 1) {
+            // move left
+            twoDimPuzzle[positionX - 1][positionY] = 2;
+            twoDimPuzzle[positionX - 2][positionY] = 2;
+            twoDimPuzzle[positionX][positionY] = 1;
             moves.add(new Move(positionX, positionY, Move.DirectionEnum.RIGHT));
             return true;
-
         }
         else {
             // There is no move left for this position
             return false;
+        }
+    }
+
+    private void undo(Move move) {
+        if (move.getDirection().equals(Move.DirectionEnum.UP.toString())) {
+            twoDimPuzzle[move.getPositionX()][move.getPositionY() + 1] = 1;
+            twoDimPuzzle[move.getPositionX()][move.getPositionY() + 2] = 1;
+            twoDimPuzzle[move.getPositionX()][move.getPositionY()] = 2;
+        }
+        else if (move.getDirection().equals(Move.DirectionEnum.DOWN.toString())) {
+            twoDimPuzzle[move.getPositionX()][move.getPositionY() - 1] = 1;
+            twoDimPuzzle[move.getPositionX()][move.getPositionY() - 2] = 1;
+            twoDimPuzzle[move.getPositionX()][move.getPositionY()] = 2;
+        }
+        else if (move.getDirection().equals(Move.DirectionEnum.LEFT.toString())) {
+            twoDimPuzzle[move.getPositionX() + 1][move.getPositionY()] = 1;
+            twoDimPuzzle[move.getPositionX() + 2][move.getPositionY()] = 1;
+            twoDimPuzzle[move.getPositionX()][move.getPositionY()] = 2;
+        }
+        else if (move.getDirection().equals(Move.DirectionEnum.RIGHT.toString())) {
+            twoDimPuzzle[move.getPositionX() - 1][move.getPositionY()] = 1;
+            twoDimPuzzle[move.getPositionX() - 2][move.getPositionY()] = 1;
+            twoDimPuzzle[move.getPositionX()][move.getPositionY()] = 2;
         }
     }
 
