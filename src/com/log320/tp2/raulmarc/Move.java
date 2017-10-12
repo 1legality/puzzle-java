@@ -8,8 +8,6 @@ public class Move {
     private int [][] puzzleState = new int [7][7];
     public static enum DirectionEnum {UP, DOWN, LEFT, RIGHT};
 
-    Move () {}
-
     Move(int positionX, int positionY, DirectionEnum direction, int[][] puzzleState) {
         this.positionX = positionX;
         this.positionY = positionY;

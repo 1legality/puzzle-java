@@ -3,6 +3,7 @@ package com.log320.tp2.raulmarc;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 class Puzzle {
     private int pegs = 0;
@@ -37,7 +38,6 @@ class Puzzle {
             while ((word = brWords.readLine()) != null) {
                 int column = 0;
                 for (char letter : word.toCharArray()) {
-                    if (Character.getNumericValue(letter) == 1) { pegs++; }
                     twoDimPuzzle[line][column] = Character.getNumericValue(letter);
                     column++;
                 }
@@ -51,52 +51,72 @@ class Puzzle {
 
     private boolean findNextMove(int positionX, int positionY) {
         // use Konami order : up, down, left, right
-        if (positionY <= 4 &&
-                twoDimPuzzle[positionX][positionY + 1] == 1 &&
-                twoDimPuzzle[positionX][positionY + 2] == 2 &&
-                !bannedMoves.contains(new Move(positionX, positionY, Move.DirectionEnum.UP, twoDimPuzzle))) {
+        if (positionY >= 2 &&
+                twoDimPuzzle[positionX][positionY - 1] == 1 &&
+                twoDimPuzzle[positionX][positionY - 2] == 2 &&
+                bannedMoves.stream().noneMatch(dto ->
+                                dto.getPositionX() == positionX &&
+                                dto.getPositionY() == positionY &&
+                                dto.getDirection().equals(Move.DirectionEnum.UP.toString()) &&
+                                dto.getPuzzleState() == twoDimPuzzle)) {
             // move UP
-            twoDimPuzzle[positionX][positionY + 1] = 2;
-            twoDimPuzzle[positionX][positionY + 2] = 1;
+
             twoDimPuzzle[positionX][positionY] = 2;
-            moves.add(new Move(positionX, positionY, Move.DirectionEnum.UP, twoDimPuzzle));
-            pegs--;
-            return true;
-        }
-        else if (positionY >= 2 &&
-                    twoDimPuzzle[positionX][positionY - 1] == 1 &&
-                    twoDimPuzzle[positionX][positionY - 2] == 2 &&
-                    !bannedMoves.contains(new Move(positionX, positionY, Move.DirectionEnum.DOWN, twoDimPuzzle))) {
-            // move DOWN
             twoDimPuzzle[positionX][positionY - 1] = 2;
             twoDimPuzzle[positionX][positionY - 2] = 1;
+
+            moves.add(new Move(positionX, positionY, Move.DirectionEnum.UP, twoDimPuzzle));
+            return true;
+        }
+        else if (positionY <= 2 &&
+                    twoDimPuzzle[positionX][positionY + 1] == 1 &&
+                    twoDimPuzzle[positionX][positionY + 2] == 2 &&
+                    bannedMoves.stream().noneMatch(dto ->
+                                    dto.getPositionX() == positionX &&
+                                    dto.getPositionY() == positionY &&
+                                    dto.getDirection().equals(Move.DirectionEnum.DOWN.toString()) &&
+                                    dto.getPuzzleState() == twoDimPuzzle)) {
+            // move DOWN
+
             twoDimPuzzle[positionX][positionY] = 2;
-            pegs--;
+            twoDimPuzzle[positionX][positionY + 1] = 2;
+            twoDimPuzzle[positionX][positionY + 2] = 1;
+
             moves.add(new Move(positionX, positionY, Move.DirectionEnum.DOWN, twoDimPuzzle));
             return true;
         }
-        else if (positionX <= 4 &&
+        else if (positionX >= 2 &&
                     twoDimPuzzle[positionX + 1][positionY] == 1 &&
                     twoDimPuzzle[positionX + 2][positionY] == 2 &&
-                    !bannedMoves.contains(new Move(positionX, positionY, Move.DirectionEnum.LEFT, twoDimPuzzle))) {
+                    bannedMoves.stream().noneMatch(dto ->
+                                    dto.getPositionX() == positionX &&
+                                    dto.getPositionY() == positionY &&
+                                    dto.getDirection().equals(Move.DirectionEnum.LEFT.toString()) &&
+                                    dto.getPuzzleState() == twoDimPuzzle)) {
             // move LEFT
-            twoDimPuzzle[positionX + 1][positionY] = 2;
-            twoDimPuzzle[positionX + 2][positionY] = 1;
+
             twoDimPuzzle[positionX][positionY] = 2;
-            moves.add(new Move(positionX, positionY, Move.DirectionEnum.LEFT, twoDimPuzzle));
-            pegs--;
-            return true;
-        }
-        else if (positionX >= 2 &&
-                    twoDimPuzzle[positionX - 1][positionY] == 1 &&
-                    twoDimPuzzle[positionX - 2][positionY] == 2 &&
-                    !bannedMoves.contains(new Move(positionX, positionY, Move.DirectionEnum.RIGHT, twoDimPuzzle))) {
-            // move RIGHT
             twoDimPuzzle[positionX - 1][positionY] = 2;
             twoDimPuzzle[positionX - 2][positionY] = 1;
+
+            moves.add(new Move(positionX, positionY, Move.DirectionEnum.LEFT, twoDimPuzzle));
+            return true;
+        }
+        else if (positionX <= 5 &&
+                    twoDimPuzzle[positionX + 1][positionY] == 1 &&
+                    twoDimPuzzle[positionX + 2][positionY] == 2 &&
+                    bannedMoves.stream().noneMatch(dto ->
+                            dto.getPositionX() == positionX &&
+                            dto.getPositionY() == positionY &&
+                            dto.getDirection().equals(Move.DirectionEnum.RIGHT.toString()) &&
+                            dto.getPuzzleState() == twoDimPuzzle)) {
+            // move RIGHT
+
             twoDimPuzzle[positionX][positionY] = 2;
+            twoDimPuzzle[positionX + 1][positionY] = 2;
+            twoDimPuzzle[positionX + 2][positionY] = 1;
+
             moves.add(new Move(positionX, positionY, Move.DirectionEnum.RIGHT, twoDimPuzzle));
-            pegs--;
             return true;
         }
         else {
@@ -109,29 +129,37 @@ class Puzzle {
         bannedMoves.add(move);
         moves.remove(move);
 
+        System.out.println("BANNING");
+        System.out.println(Arrays.deepToString(twoDimPuzzle).replace("], ", "]\n").replace("[[", "[").replace("]]", "]"));
+        System.out.println(move.getPositionX()+":"+move.getPositionY()+":"+move.getDirection());
+
         if (move.getDirection().equals(Move.DirectionEnum.UP.toString())) {
-            twoDimPuzzle[move.getPositionX()][move.getPositionY()] = 1;
-            twoDimPuzzle[move.getPositionX()][move.getPositionY() + 1] = 1;
-            twoDimPuzzle[move.getPositionX()][move.getPositionY() + 2] = 2;
-        }
-        else if (move.getDirection().equals(Move.DirectionEnum.DOWN.toString())) {
             twoDimPuzzle[move.getPositionX()][move.getPositionY()] = 1;
             twoDimPuzzle[move.getPositionX()][move.getPositionY() - 1] = 1;
             twoDimPuzzle[move.getPositionX()][move.getPositionY() - 2] = 2;
         }
-        else if (move.getDirection().equals(Move.DirectionEnum.LEFT.toString())) {
+        else if (move.getDirection().equals(Move.DirectionEnum.DOWN.toString())) {
             twoDimPuzzle[move.getPositionX()][move.getPositionY()] = 1;
-            twoDimPuzzle[move.getPositionX() + 1][move.getPositionY()] = 1;
-            twoDimPuzzle[move.getPositionX() + 2][move.getPositionY()] = 2;
+            twoDimPuzzle[move.getPositionX()][move.getPositionY() + 1] = 1;
+            twoDimPuzzle[move.getPositionX()][move.getPositionY() + 2] = 2;
         }
-        else if (move.getDirection().equals(Move.DirectionEnum.RIGHT.toString())) {
+        else if (move.getDirection().equals(Move.DirectionEnum.LEFT.toString())) {
             twoDimPuzzle[move.getPositionX()][move.getPositionY()] = 1;
             twoDimPuzzle[move.getPositionX() - 1][move.getPositionY()] = 1;
             twoDimPuzzle[move.getPositionX() - 2][move.getPositionY()] = 2;
         }
+        else if (move.getDirection().equals(Move.DirectionEnum.RIGHT.toString())) {
+            twoDimPuzzle[move.getPositionX()][move.getPositionY()] = 1;
+            twoDimPuzzle[move.getPositionX() + 1][move.getPositionY()] = 1;
+            twoDimPuzzle[move.getPositionX() + 2][move.getPositionY()] = 2;
+        }
+
+        System.out.println("AFTER");
+        System.out.println(Arrays.deepToString(twoDimPuzzle).replace("], ", "]\n").replace("[[", "[").replace("]]", "]"));
+        System.out.println(move.getPositionX()+":"+move.getPositionY()+":"+move.getDirection());
     }
 
-    int movesLength = 0;
+    private int movesLength = 0;
     private boolean resolve() {
         // TODO : create recursive function to resolve puzzle
         pegs = 0;
@@ -139,26 +167,26 @@ class Puzzle {
         for (int i = 0; i < 7; i++) {
             for (int n = 0; n < 7; n++) {
                 if (twoDimPuzzle[i][n] == 1) {
+
                     pegs++;
                     if (findNextMove(i, n)) {
-                        resolve();
                         movesLength++;
+                        return resolve();
                     }
                 }
             }
         }
 
+        System.out.println("end turn, pegs left : " + pegs);
+
         if (pegs == 1) {
             return true;
         }
         else {
-            System.out.println("undo last, banned move size : " + movesLength);
+            System.out.println("undo last, banned move size : " + movesLength + ", moves size : " + moves.size());
             undo(moves.get(moves.size() - 1));
             movesLength++;
-            resolve();
+            return resolve();
         }
-
-        return false;
-
     }
 }
