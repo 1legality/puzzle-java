@@ -1,20 +1,25 @@
-class Helpers {
+package ca.etsmtl.pegsolitaire;
+
+import java.io.*;
+
+public class Helpers {
 
     /**
      * Read puzzle file
-     * 
-     * @param puzzleURI path to puzzle file
+     *
+     * @param pReader character stream reader
      * @return puzzle 2D array
      */
-    private int[][] readPuzzleFile(String puzzleURI) {
+    public int[][] readPuzzleFile(Reader pReader) {
+
         int[][] puzzleBoard = new int[7][7];
 
         try {
-            BufferedReader brWords = new BufferedReader(new InputStreamReader(new FileInputStream(puzzleURI), "UTF8"));
+            BufferedReader brPuzzle = new BufferedReader(pReader);
 
             String word;
             int line = 0;
-            while ((word = brWords.readLine()) != null) {
+            while ((word = brPuzzle.readLine()) != null) {
                 int column = 0;
                 for (char letter : word.toCharArray()) {
                     puzzleBoard[line][column] = Character.getNumericValue(letter);
@@ -23,7 +28,7 @@ class Helpers {
                 line++;
             }
 
-            return puzzleBoard
+            return puzzleBoard;
         }
         catch (IOException err) {
             System.out.println(err.toString());
@@ -31,4 +36,6 @@ class Helpers {
 
         return null;
     }
+
+
 }

@@ -1,4 +1,4 @@
-package com.log320.tp2.raulmarc;
+package java;
 
 public class Move {
     private int positionX;
