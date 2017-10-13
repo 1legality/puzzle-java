@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 class Puzzle {
     private int pegs = 0;
@@ -50,6 +52,16 @@ class Puzzle {
     }
 
     private boolean findNextMove(int positionX, int positionY) {
+
+        List<Move> bannedMoveMatches = bannedMoves.stream()
+                        .filter(dto ->
+                            dto.getPositionX() == positionX &&
+                            dto.getPositionY() == positionY &&
+                            dto.getPuzzleState() == twoDimPuzzle)
+                        .collect(Collectors.toList());
+
+        System.out.println("Banned moves matches : " + bannedMoveMatches.size());
+
         // use Konami order : up, down, left, right
         if (positionY >= 2 &&
                 twoDimPuzzle[positionX][positionY - 1] == 1 &&
@@ -68,7 +80,7 @@ class Puzzle {
             moves.add(new Move(positionX, positionY, Move.DirectionEnum.UP, twoDimPuzzle));
             return true;
         }
-        else if (positionY <= 2 &&
+        else if (positionY <= 4 &&
                     twoDimPuzzle[positionX][positionY + 1] == 1 &&
                     twoDimPuzzle[positionX][positionY + 2] == 2 &&
                     bannedMoves.stream().noneMatch(dto ->
@@ -86,8 +98,8 @@ class Puzzle {
             return true;
         }
         else if (positionX >= 2 &&
-                    twoDimPuzzle[positionX + 1][positionY] == 1 &&
-                    twoDimPuzzle[positionX + 2][positionY] == 2 &&
+                    twoDimPuzzle[positionX - 1][positionY] == 1 &&
+                    twoDimPuzzle[positionX - 2][positionY] == 2 &&
                     bannedMoves.stream().noneMatch(dto ->
                                     dto.getPositionX() == positionX &&
                                     dto.getPositionY() == positionY &&
@@ -102,7 +114,7 @@ class Puzzle {
             moves.add(new Move(positionX, positionY, Move.DirectionEnum.LEFT, twoDimPuzzle));
             return true;
         }
-        else if (positionX <= 5 &&
+        else if (positionX <= 4 &&
                     twoDimPuzzle[positionX + 1][positionY] == 1 &&
                     twoDimPuzzle[positionX + 2][positionY] == 2 &&
                     bannedMoves.stream().noneMatch(dto ->
