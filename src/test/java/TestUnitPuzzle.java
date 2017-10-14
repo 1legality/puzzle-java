@@ -55,12 +55,90 @@ public class UnitTestPuzzle {
     }
 
     @Test
+    public void isLegalMove() {
+        assertEquals(true, puzzle.isLegalMove(3, 5, puzzle.goingUp()));
+    }
+
+    @Test
+    public void isNotLegalMoveUp() {
+        // Has no neighbour and destination is not vacant
+        assertEquals(false, puzzle.isLegalMove(3, 2, puzzle.goingUp()));
+    }
+
+    @Test
+    public void isNotLegalMoveLeft() {
+        // Has no neighbour, destination is vacant
+        assertEquals(false, puzzle.isLegalMove(3, 2, puzzle.goingLeft()));
+    }
+
+    @Test
+    public void isNotLegalMoveRight() {
+        // Has neighbour, destination is not vacant
+        assertEquals(false, puzzle.isLegalMove(3, 2, puzzle.goingRight()));
+
+    }
+
+    @Test
+    public void isNotLegalMoveOutOfBounds() {
+        // Destination is out of bounds
+        assertEquals(false, puzzle.isLegalMove(3, 0, puzzle.goingRight()));
+    }
+
+    @Test
+    public void computeDestinationUp() {
+        int[] destinationCoords = puzzle.computeDestinationCoords(2,2, puzzle.goingUp());
+        assertArrayEquals(new int[]{2, 0}, destinationCoords);
+    }
+
+    @Test
+    public void computeDestinationDown() {
+        int[] destinationCoords = puzzle.computeDestinationCoords(2,2, puzzle.goingDown());
+        assertArrayEquals(new int[]{2, 4}, destinationCoords);
+    }
+
+    @Test
+    public void computeDestinationLeft() {
+        int[] destinationCoords = puzzle.computeDestinationCoords(2,2, puzzle.goingLeft());
+        assertArrayEquals(new int[]{0, 2}, destinationCoords);
+    }
+
+    @Test
+    public void computeDestinationRight() {
+        int[] destinationCoords = puzzle.computeDestinationCoords(2,2, puzzle.goingRight());
+        assertArrayEquals(new int[]{4, 2}, destinationCoords);
+    }
+
+    @Test
+    public void computeNeighbourUp() {
+        int[] neighbourCoords = puzzle.computeNeighbourCoords(2,2, puzzle.goingUp());
+        assertArrayEquals(new int[]{2, 1}, neighbourCoords);
+    }
+
+    @Test
+    public void computeNeighbourDown() {
+        int[] neighbourCoords = puzzle.computeNeighbourCoords(2,2, puzzle.goingDown());
+        assertArrayEquals(new int[]{2, 3}, neighbourCoords);
+    }
+
+    @Test
+    public void computeNeighbourLeft() {
+        int[] neighbourCoords = puzzle.computeNeighbourCoords(2,2, puzzle.goingLeft());
+        assertArrayEquals(new int[]{1, 2}, neighbourCoords);
+    }
+
+    @Test
+    public void computeNeighbourRight() {
+        int[] neighbourCoords = puzzle.computeNeighbourCoords(2,2, puzzle.goingRight());
+        assertArrayEquals(new int[]{3, 2}, neighbourCoords);
+    }
+
+    @Test
     public void isOccupied() {
         try {
             Method isOccupied = puzzle.getClass().getDeclaredMethod("isOccupied", int.class, int.class);
             isOccupied.setAccessible(true);
 
-            assertEquals(true, isOccupied.invoke(puzzle, new Integer[]{2, 0}));
+            assertEquals(false, isOccupied.invoke(puzzle, new Integer[]{2, 0}));
 
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
@@ -224,106 +302,4 @@ public class UnitTestPuzzle {
             e.printStackTrace();
         }
     }
-
-
-
-
-    @Test
-    public void isLegalMove() {
-       assertEquals(true, puzzle.isLegalMove(3, 5, puzzle.goingUp()));
-    }
-
-    @Test
-    public void isNotLegalMoveUp() {
-        // Has no neighbour and destination is not vacant
-        assertEquals(false, puzzle.isLegalMove(3, 2, puzzle.goingUp()));
-    }
-
-    @Test
-    public void isNotLegalMoveLeft() {
-        // Has no neighbour, destination is vacant
-        assertEquals(false, puzzle.isLegalMove(3, 2, puzzle.goingLeft()));
-    }
-
-    @Test
-    public void isNotLegalMoveRight() {
-        // Has neighbour, destination is not vacant
-        assertEquals(false, puzzle.isLegalMove(3, 2, puzzle.goingRight()));
-
-    }
-
-    @Test
-    public void isNotLegalMoveOutOfBounds() {
-        assertEquals(false, puzzle.isLegalMove(3, 0, puzzle.goingRight()));
-    }
-
-    @Test
-    public void computeDestinationUp() {
-        try {
-            Method computeDestination = puzzle.getClass().getDeclaredMethod("computeDestinationCoords", int.class, int.class, int.class);
-            computeDestination.setAccessible(true);
-            Object destinationCoords = computeDestination.invoke(puzzle, new Integer[]{2, 2, puzzle.goingUp()});
-            assertArrayEquals(new int[]{2,0}, (int[])destinationCoords);
-
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void computeDestinationDown() {
-        try {
-            Method computeDestination = puzzle.getClass().getDeclaredMethod("computeDestinationCoords", int.class, int.class, int.class);
-            computeDestination.setAccessible(true);
-            Object destinationCoords = computeDestination.invoke(puzzle, new Integer[]{2, 2, puzzle.goingDown()});
-            assertArrayEquals(new int[]{2,4}, (int[])destinationCoords);
-
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void computeDestinationLeft() {
-        try {
-            Method computeDestination = puzzle.getClass().getDeclaredMethod("computeDestinationCoords", int.class, int.class, int.class);
-            computeDestination.setAccessible(true);
-            Object destinationCoords = computeDestination.invoke(puzzle, new Integer[]{2, 2, puzzle.goingLeft()});
-            assertArrayEquals(new int[]{0,2}, (int[])destinationCoords);
-
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void computeDestinationRight() {
-        try {
-            Method computeDestination = puzzle.getClass().getDeclaredMethod("computeDestinationCoords", int.class, int.class, int.class);
-            computeDestination.setAccessible(true);
-            Object destinationCoords = computeDestination.invoke(puzzle, new Integer[]{2, 2, puzzle.goingRight()});
-            assertArrayEquals(new int[]{4,2}, (int[])destinationCoords);
-
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-    }
-
-
 }

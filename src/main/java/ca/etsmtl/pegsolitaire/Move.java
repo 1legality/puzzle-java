@@ -1,38 +1,76 @@
-package java;
+package ca.etsmtl.pegsolitaire;
 
-public class Move {
-    private int positionX;
-    private int positionY;
-    private String direction;
-    public static enum DirectionEnum {UP, DOWN, LEFT, RIGHT};
+public class Move implements Command{
+    private Puzzle puzzle;
+    private int    initX,
+                   initY,
+                   direction;
 
-    Move(int positionX, int positionY, DirectionEnum direction) {
-        this.positionX = positionX;
-        this.positionY = positionY;
-        this.direction = direction.toString();
+    /**
+     * Constructor
+     * @param puzzle puzzle instance
+     * @param x initial x coord
+     * @param y initial y coord
+     * @param direction desired move direction
+     */
+    public Move(Puzzle puzzle, int x, int y, int direction) {
+        this.puzzle    = puzzle;
+        this.initX     = x;
+        this.initY     = y;
+        this.direction = direction;
     }
 
-    public int getPositionX() {
-        return positionX;
+    /**
+     * Moves peg to destination
+     * @return true if operation succeeded
+     */
+    public boolean execute() {
+        if(this.puzzle.isLegalMove(initX, initY, direction)) {
+            // vacate starting point
+            this.puzzle.vacate(initX, initY);
+
+            // occupy destination
+            int[] destinationCoords = this.puzzle.computeDestinationCoords(initX, initY, direction);
+            int destinationX = destinationCoords[0];
+            int destinationY = destinationCoords[1];
+
+            this.puzzle.occupy(destinationX, destinationY);
+
+            // vacate neighbour
+            int[] neighbourCoords = this.puzzle.computeNeighbourCoords(initX, initY, direction);
+            int neighbourX = neighbourCoords[0];
+            int neighboury = neighbourCoords[1];
+
+            this.puzzle.vacate(neighbourX, neighboury);
+
+            return true;
+        }
+
+        return false;
     }
 
-    public void setPositionX(int positionX) {
-        this.positionX = positionX;
-    }
+    /**
+     * Moves peg back to source
+     * @return true if operation succeeded
+     */
+    public boolean undo() {
+        // occupy starting point
+        this.puzzle.occupy(initX, initY);
 
-    public int getPositionY() {
-        return positionY;
-    }
+        // vacate destination
+        int[] destinationCoords = this.puzzle.computeDestinationCoords(initX, initY, direction);
+        int destinationX = destinationCoords[0];
+        int destinationY = destinationCoords[1];
 
-    public void setPositionY(int positionY) {
-        this.positionY = positionY;
-    }
+        this.puzzle.vacate(destinationX, destinationY);
 
-    public String getDirection() {
-        return this.direction;
-    }
+        // occupy neighbour
+        int[] neighbourCoords = this.puzzle.computeNeighbourCoords(initX, initY, direction);
+        int neighbourX = neighbourCoords[0];
+        int neighbourY = neighbourCoords[1];
 
-    public void setDirection(DirectionEnum direction) {
-        this.direction = direction.toString();
+        this.puzzle.occupy(neighbourX, neighbourY);
+
+        return true;
     }
 }
