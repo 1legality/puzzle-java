@@ -15,12 +15,7 @@ public class Solver {
                 for(int direction : puzzle.getDirections()) {
                     if(evoker.execute(new Move(puzzle, x, y, direction))) {
                         if( ! (moveCtr >= 31 && evoker.getPegsLeft() == 1) ) {
-                            System.out.println("===============Pegs Left: " + evoker.getPegsLeft());
-                            System.out.println("Move: " + moveCtr);
-
-                            puzzle.printPuzzle();
                             if(findSolution(moveCtr + 1)) {
-                                System.out.println(moveCtr);
                                 return true;
                             } else {
                                 Evoker.undo();

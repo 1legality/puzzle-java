@@ -18,8 +18,13 @@ public class Main {
             Puzzle puzzle = new Puzzle(puzzleArray);
             Solver solver = new Solver(puzzle);
 
+            long start = System.nanoTime();
             if(solver.findSolution(1)){
+                long stop = System.nanoTime();
+
                 System.out.println("Success!");
+                System.out.println("Nodes: " + evoker.getNodes());
+                System.out.println("Time to solve: " + ((stop - start) / 1000000) + " ms");
                 puzzle.printPuzzle();
             } else {
                 System.out.println("Can not solve puzzle");

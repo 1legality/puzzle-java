@@ -7,6 +7,7 @@ public class Evoker {
     private static Evoker         evoker    = null;
     private static Stack<Command> executed  = new Stack<Command>();
     private static int            pegsLeft  = 0;
+    private static int            nodes     = 0;
 
     /**
      * Constructor
@@ -40,6 +41,13 @@ public class Evoker {
     }
 
     /**
+     * @return number of visited nodes
+     */
+    public int getNodes() {
+        return nodes;
+    }
+
+    /**
      * Executes commands
      * @param pCommand command to execute
      * @return true if executed successfully
@@ -47,6 +55,7 @@ public class Evoker {
     public static boolean execute(Command pCommand) {
         if(pCommand.execute()) {
             executed.push(pCommand);
+            nodes++;
             pegsLeft--;
             return true;
         }
@@ -65,6 +74,7 @@ public class Evoker {
         Command last = executed.peek();
         last.undo();
         executed.pop();
+        nodes++;
         pegsLeft++;
 
     }
