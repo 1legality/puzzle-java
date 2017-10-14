@@ -3,14 +3,14 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;
 
-import ca.etsmtl.pegsolitaire.Helpers;
+import ca.etsmtl.pegsolitaire.FileLoader;
 
 import java.io.Reader;
 import java.io.StringReader;
 
 public class TestUnitHelpers {
 
-	private static Helpers        helpers     = null;
+	private static FileLoader helpers     = null;
 	private static Reader         mockInput   = null;
 	private static int[][]        puzzleArray = null;
 	private static String         puzzle      = "0011100\n" +
@@ -25,7 +25,7 @@ public class TestUnitHelpers {
 	@BeforeClass
 	public static void setup() {
 		mockInput = new StringReader(puzzle);
-		helpers   = new Helpers();
+		helpers   = new FileLoader();
 
 		puzzleArray = helpers.readPuzzleFile(mockInput);
 	}
