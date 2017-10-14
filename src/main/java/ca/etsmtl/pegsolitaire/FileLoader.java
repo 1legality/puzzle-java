@@ -2,7 +2,8 @@ package ca.etsmtl.pegsolitaire;
 
 import java.io.*;
 
-public class Helpers {
+public class FileLoader {
+    private int pegsInFile = 0;
 
     /**
      * Read puzzle file
@@ -22,7 +23,11 @@ public class Helpers {
             while ((word = brPuzzle.readLine()) != null) {
                 int column = 0;
                 for (char letter : word.toCharArray()) {
-                    puzzleBoard[line][column] = Character.getNumericValue(letter);
+                    int number = Character.getNumericValue(letter);
+                    puzzleBoard[line][column] = number;
+                    if(number == 1) {
+                        this.pegsInFile++;
+                    }
                     column++;
                 }
                 line++;
@@ -37,5 +42,10 @@ public class Helpers {
         return null;
     }
 
-
+    /**
+     * @return number of detected pegs
+     */
+    public int getNumberOfPegs() {
+        return this.pegsInFile;
+    }
 }

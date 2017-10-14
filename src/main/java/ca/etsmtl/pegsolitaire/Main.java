@@ -1,13 +1,44 @@
-package com.log320.tp2.raulmarc;
+package ca.etsmtl.pegsolitaire;
+
+import java.io.*;
 
 public class Main {
 
     public static void main(String[] args) {
-        Puzzle puzzle= new Puzzle();
-        puzzle.run("test.puzzle");
+        // create Loader instance
+        FileLoader loader = new FileLoader();
+
+        try {
+            Reader fileReader = new InputStreamReader(new FileInputStream("./src/main/resources/test.puzzle"), "UTF8");
+            int[][] puzzleArray = loader.readPuzzleFile(fileReader);
+
+            Evoker evoker = Evoker.getEvoker();
+            evoker.setPegs(loader.getNumberOfPegs());
+
+            Puzzle puzzle = new Puzzle(puzzleArray);
+            Solver solver = new Solver(puzzle);
+
+            if(solver.findSolution(1)){
+                System.out.println("Success!");
+                puzzle.printPuzzle();
+            } else {
+                System.out.println("Can not solve puzzle");
+            }
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+
+        // load file
+        // create puzzle instance (pass board array)
+        // create solver instance (pass puzzle
     }
 
-
+/*
     void run(String puzzleURI) {
         readPuzzleFile(puzzleURI);
         boolean won = resolve();
@@ -25,4 +56,5 @@ public class Main {
         System.out.println(Arrays.deepToString(twoDimPuzzle).replace("], ", "]\n").replace("[[", "[").replace("]]", "]"));
 
     }
+*/
 }
