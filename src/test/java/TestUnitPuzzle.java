@@ -10,7 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 
-public class UnitTestPuzzle {
+public class TestUnitPuzzle {
     private static Puzzle   puzzle       = null;
     private static int[][]  puzzleArray  = new int[][] {
                                                           {0,0,1,1,1,0,0},
@@ -138,7 +138,7 @@ public class UnitTestPuzzle {
             Method isOccupied = puzzle.getClass().getDeclaredMethod("isOccupied", int.class, int.class);
             isOccupied.setAccessible(true);
 
-            assertEquals(false, isOccupied.invoke(puzzle, new Integer[]{2, 0}));
+            assertEquals(true, isOccupied.invoke(puzzle, new Integer[]{2, 0}));
 
         } catch (NoSuchMethodException e) {
             e.printStackTrace();

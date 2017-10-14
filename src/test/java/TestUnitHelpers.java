@@ -8,7 +8,7 @@ import ca.etsmtl.pegsolitaire.Helpers;
 import java.io.Reader;
 import java.io.StringReader;
 
-public class UnitTestHelpers {
+public class TestUnitHelpers {
 
 	private static Helpers        helpers     = null;
 	private static Reader         mockInput   = null;
