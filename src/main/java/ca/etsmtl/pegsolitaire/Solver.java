@@ -9,13 +9,13 @@ public class Solver {
         this.evoker = Evoker.getEvoker();
     }
 
-    public boolean findSolution(int moveCtr) {
-        for(int x = 0; moveCtr <= 31 && x < 7; x++) {
+    public boolean findSolution(int pegCtr) {
+        for(int x = 0; x < 7 && pegCtr > 0; x++) {
             for(int y = 0; y < 7; y++) {
                 for(int direction : puzzle.getDirections()) {
                     if(evoker.execute(new Move(puzzle, x, y, direction))) {
-                        if( ! (moveCtr >= 31 && evoker.getPegsLeft() == 1) ) {
-                            if(findSolution(moveCtr + 1)) {
+                        if( !(evoker.getPegsLeft() == 1) ) {
+                            if(findSolution(pegCtr - 1)) {
                                 return true;
                             } else {
                                 Evoker.undo();

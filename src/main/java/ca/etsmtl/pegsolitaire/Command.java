@@ -10,5 +10,5 @@ public interface Command {
     /**
      * @return
      */
-    boolean undo();
+    int[][] undo();
 }

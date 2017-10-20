@@ -1,13 +1,18 @@
 package ca.etsmtl.pegsolitaire;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 public class Evoker {
 
-    private static Evoker         evoker    = null;
-    private static Stack<Command> executed  = new Stack<Command>();
-    private static int            pegsLeft  = 0;
-    private static int            nodes     = 0;
+    private static Evoker               evoker    = null;
+    private static Stack<Command>       executed  = new Stack<Command>();
+    private static Map<String, int[][]> blocked   = new HashMap<String, int[][]>();
+
+    private static int                  pegsLeft  = 0;
+    private static int                  nodes     = 0;
 
     /**
      * Constructor
@@ -72,10 +77,18 @@ public class Evoker {
         }
 
         Command last = executed.peek();
-        last.undo();
+        int[][] failedBoard = last.undo();
+        blocked.put(Integer.toString(Arrays.deepHashCode(failedBoard)), failedBoard);
         executed.pop();
-        nodes++;
         pegsLeft++;
+    }
 
+
+    public boolean isBlocked(int[][] board){
+        if(blocked.containsKey(Integer.toString(Arrays.deepHashCode(board)))) {
+            return true;
+        }
+
+        return false;
     }
 }

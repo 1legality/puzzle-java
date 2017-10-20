@@ -13,13 +13,14 @@ public class Main {
             int[][] puzzleArray = loader.readPuzzleFile(fileReader);
 
             Evoker evoker = Evoker.getEvoker();
-            evoker.setPegs(loader.getNumberOfPegs());
+            int pegsOnBoard = loader.getNumberOfPegs();
+            evoker.setPegs(pegsOnBoard);
 
             Puzzle puzzle = new Puzzle(puzzleArray);
             Solver solver = new Solver(puzzle);
 
             long start = System.nanoTime();
-            if(solver.findSolution(1)){
+            if(solver.findSolution(pegsOnBoard)){
                 long stop = System.nanoTime();
 
                 System.out.println("Success!");
@@ -36,30 +37,5 @@ public class Main {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-
-
-        // load file
-        // create puzzle instance (pass board array)
-        // create solver instance (pass puzzle
     }
-
-/*
-    void run(String puzzleURI) {
-        readPuzzleFile(puzzleURI);
-        boolean won = resolve();
-
-        String result =  won ? "Congratulations!" : "Lost, " + pegs + " left on board";
-        System.out.println(result);
-        System.out.println(Arrays.deepToString(twoDimPuzzle).replace("], ", "]\n").replace("[[", "[").replace("]]", "]"));
-
-        // undo everything (test)
-        Collections.reverse(moves);
-        for (Move move : moves) {
-            System.out.println(move.getPositionX() + ":" + move.getPositionY() + ":" + move.getDirection());
-            undo(move);
-        }
-        System.out.println(Arrays.deepToString(twoDimPuzzle).replace("], ", "]\n").replace("[[", "[").replace("]]", "]"));
-
-    }
-*/
 }

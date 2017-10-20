@@ -28,6 +28,10 @@ public class Puzzle {
     }
 
 
+    public int[][] getBoard() {
+        return this.puzzleArray;
+    }
+
     /**
      * @return direction constants
      */

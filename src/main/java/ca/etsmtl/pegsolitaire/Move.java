@@ -53,7 +53,7 @@ public class Move implements Command{
      * Moves peg back to source
      * @return true if operation succeeded
      */
-    public boolean undo() {
+    public int[][] undo() {
         // occupy starting point
         this.puzzle.occupy(initX, initY);
 
@@ -71,6 +71,6 @@ public class Move implements Command{
 
         this.puzzle.occupy(neighbourX, neighbourY);
 
-        return true;
+        return this.puzzle.getBoard();
     }
 }

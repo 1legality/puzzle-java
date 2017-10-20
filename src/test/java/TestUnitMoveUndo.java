@@ -36,7 +36,6 @@ public class TestUnitMoveUndo {
         puzzle      = new Puzzle(puzzleArray);
         movePeg     = new Move(puzzle, 3, 5, puzzle.goingUp());
         successful  = movePeg.execute();
-        successful  = movePeg.undo();
     }
 
     @DisplayName("Test successful move")
